@@ -22,6 +22,8 @@ inline float distance(Vector2 a, Vector2 b)
 /*
     Right now, addNode, connectNodes, and draw are really all
     that matter. Try to make sure you understand them.
+
+    Don't copy this code, just look at the functions.
 */
 class Graph
 {
