@@ -45,6 +45,19 @@ public:
         return &nodes.back();
     }
   
+    //doesn't ensure the node is already in our graph >__>, don't like this,
+    //but won't fight the tutorial for now.
+    void ConnectNodes(Node *nodeA, Node *nodeB, float weight)
+    {
+        assert(weight >= 0);
+        isBaked = false;
+        edges.push_front(Edge{ nodeA, nodeB, weight });
+    }
+
+
+
+
+
     // Loop through all nodes/edges and remove all trace of the node provided
     bool  RemoveNode(Node *pNode)
     {         
@@ -85,15 +98,7 @@ public:
         return r;
     }
 
-    //doesn't ensure the node is already in our graph >__>, don't like this,
-    //but won't fight the tutorial for now.
-    void ConnectNodes(Node *nodeA, Node *nodeB, float weight)
-    {
-        assert(weight >= 0);
-        isBaked = false;
-        edges.push_front(Edge{ nodeA, nodeB, weight });
-    }
-    
+
     // calculate the adjacency matrix and put it into a contiguous data store
     // makes future problems simpler in several ways.
     void bakeData()
