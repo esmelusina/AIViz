@@ -29,5 +29,7 @@ int main(int argc, char **argv)
     std::cout << std::endl;
     PrintBFS(a);
     delete pGraph;
+    std::cout << std::endl;
+    system("pause");
     return 0;
 };

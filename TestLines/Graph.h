@@ -52,25 +52,26 @@ private:
 
 inline void PrintDFS(Graph::Node *startNode)
 {
-    std::stack<Graph::Node *> frontier;  // Open List
-    std::set  <Graph::Node *> explored;  // Closed List
+    //std::stack<Graph::Node *> frontier;  // Open List
+    std::list<Graph::Node *> frontier;
+    std::set <Graph::Node *> explored;  // Closed List
                                          
-    frontier.push  (startNode);
+    frontier.push_front(startNode);
     explored.insert(startNode);
+
     while(!frontier.empty())               
     {
-        auto current = frontier.top();     
+        auto current = frontier.front();     
         std::cout << (char)current->value << " "; 
-        frontier.pop();                     
-        
+        frontier.pop_front();                     
+        explored.insert(current);
+
         for each(Graph::Edge e in current->connections)
-        {
             if (!explored.count(e.connection))
             {
-                frontier.push(e.connection);
+                frontier.push_front(e.connection);
                 explored.insert(e.connection);
             }
-        }
     }
 }
 
