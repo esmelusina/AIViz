@@ -3,49 +3,31 @@
 #include <iostream>
 
 #include "Graph.h"
-#include "visualize.h"
-
-using Node = Graph::Node;
 
 
+//#include "visualize.h"
 
-void main()
+int main(int argc, char **argv)
 {
-    sfwl::initContext();
-
     Graph *pGraph = new Graph();
-    Node *a = pGraph->AddNode(Vector2(100, 100));
-    Node *b = pGraph->AddNode(Vector2(150, 100));
-    Node *c = pGraph->AddNode(Vector2(200, 100));
-    Node *d = pGraph->AddNode(Vector2(150, 150));
-    Node *e = pGraph->AddNode(Vector2(100, 200));
-    Node *f = pGraph->AddNode(Vector2(150, 200));
-    Node *g = pGraph->AddNode(Vector2(200, 200));
-    Node *h = pGraph->AddNode(Vector2(300, 150));
-    Node *i = pGraph->AddNode(Vector2(250, 100));
-    Node *j = pGraph->AddNode(Vector2(300, 100));
-    Node *k = pGraph->AddNode(Vector2(350, 100));
+    
+    Graph::Node *a, *b, *c, *d, *e, *f, *g, *h, *i, *j;
+    a = pGraph->AddNode('a'); b = pGraph->AddNode('b');
+    c = pGraph->AddNode('c'); d = pGraph->AddNode('d');
+    e = pGraph->AddNode('e'); f = pGraph->AddNode('f');
+    g = pGraph->AddNode('g'); h = pGraph->AddNode('h');
+    i = pGraph->AddNode('i'); j = pGraph->AddNode('j');
+    pGraph->AddConnection(a, b); pGraph->AddConnection(a, d);
+    pGraph->AddConnection(a, e); pGraph->AddConnection(b, c);
+    pGraph->AddConnection(d, h); pGraph->AddConnection(e, h);
+    pGraph->AddConnection(e, f); pGraph->AddConnection(f, c);
+    pGraph->AddConnection(f, j); pGraph->AddConnection(g, c);
+    pGraph->AddConnection(g, j); pGraph->AddConnection(i, j);
+    pGraph->AddConnection(i, h);
 
-    pGraph->ConnectNodes(a, d, 1);
-    pGraph->ConnectNodes(b, d, 1);
-    pGraph->ConnectNodes(c, d, 1);
-    pGraph->ConnectNodes(d, h, 1);
-    pGraph->ConnectNodes(d, e, 1);
-    pGraph->ConnectNodes(d, f, 1);
-    pGraph->ConnectNodes(d, g, 1);
-    pGraph->ConnectNodes(i, h, 1);
-    pGraph->ConnectNodes(j, h, 1);
-    pGraph->ConnectNodes(k, h, 1);
-    pGraph->bakeData();
-
-    while (sfwl::stepContext())
-    {
-        //drawGraph(pGraph->size(), pGraph->getPositions(), pGraph->getAdjacencyMatrix());
-
-        pGraph->draw();
-    }
-
+    PrintDFS(a);
+    std::cout << std::endl;
+    PrintBFS(a);
     delete pGraph;
-
-    sfwl::termContext();
-}
+    return 0;
+};

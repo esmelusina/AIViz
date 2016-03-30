@@ -3,7 +3,7 @@
 #include "Graph.h"
 
 
-void Graph::draw()
+inline void Graph::draw()
 {
     for each(Edge e in edges)
         sfwl::drawLine(e.a->data.x, e.a->data.y, e.b->data.x, e.b->data.y);
