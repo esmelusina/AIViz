@@ -28,8 +28,14 @@ int main(int argc, char **argv)
     PrintDFS(a);
     std::cout << std::endl;
     PrintBFS(a);
-    delete pGraph;
     std::cout << std::endl;
+    std::cout << std::endl;
+    PrintByComparison(a, CompareDFS);
+    std::cout << std::endl;
+    PrintByComparison(a, CompareBFS);
+    std::cout << std::endl;
+
+    delete pGraph;
     system("pause");
     return 0;
 };
