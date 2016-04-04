@@ -76,6 +76,7 @@
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Agent.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="Solver.h" />
   </ItemGroup>
