@@ -4,27 +4,35 @@
 #include <set>
 
 
+struct Meta
+{
+
+    enum STATE { undiscovered, frontier, explored } state;
+
+    // For visualization
+    enum PATH { none, route, start, goal } path;
+
+    float g, h, f;      // Scores
+    unsigned DOS;       // Degrees of separation
+    size_t prev, self;  // indices to other stuff
+
+                        // For closed/open list
+
+
+    Meta() : state(undiscovered), path(none) {}
+};
+
+typedef bool(*CompFunc)(const Meta &a, const Meta &b);
+
+
 template<typename Node> // T is the data stored in a node.
 class Solver
 {
 public:
-    struct Meta
-    {
-        float g, h, f;      // Scores
-        unsigned DOS;       // Degrees of separation
-        size_t prev, self;  // indices to other stuff
 
-        // For closed/open list
-        enum STATE { undiscovered, frontier, explored } state;
-
-        // For visualization
-        enum PATH  { none, route, start, goal } path;
-
-        Meta() : state(undiscovered), path(none) {}
-    };
 
     // comparison and heuristic function typedefs
-    typedef bool (*CompFunc)(const Meta &a, const Meta &b);
+   
     typedef float(*HeurFunc)(const Node &a, const Node &b);
 
     std::list  <Meta>  frontier;
@@ -93,6 +101,11 @@ public:
 
         path.push_back(start);
         std::reverse(path.begin(), path.end());
+
+        for each(unsigned i in path)
+                    std::cout << i << " ";
+        
+        std::cout << std::endl;
         return path;
     }
 
@@ -105,9 +118,13 @@ public:
         Meta current = frontier.front();
         frontier.pop_front();
         
-        current.state = Meta::explored;
+        meta_data[current.self].state = Meta::explored;
 
-        if (current.self == goal) return 1; // I succeeded!
+        if (current.self == goal)
+        {
+            frontier.clear();
+            return 1; // I succeeded!
+        }
 
         for (unsigned i = 0; i < size; ++i)
             if (meta_data[i].state != Meta::explored && edge_data[current.self*size + i] > 0)
@@ -120,6 +137,7 @@ public:
                 temp.prev  = current.self;
                 temp.self  = i;
                 temp.state = Meta::frontier;
+                temp.path  = meta_data[i].path;
 
                 if (!meta_data[i].state || temp.g < meta_data[i].g)
                 {
@@ -131,3 +149,5 @@ public:
         return 0;
     }
 };
+
+

@@ -1,46 +1,110 @@
 #include "sfwl.h"
 #include <random>
 #include <iostream>
-
-#include "Grid.h"
+#include <cmath>
+#include <random>
+#include "Graph.h"
 #include "Solver.h"
 
-bool comparison(const Solver<Vector2>::Meta &a, const Solver<Vector2>::Meta &b)
+inline void drawSolver(const Solver<Vector2> &s)
+{
+    for (unsigned i = 0; i < s.size; ++i)
+    {
+        unsigned color;
+        switch (s.meta_data[i].state)
+        {
+        case Meta::undiscovered: color = BLUE; break;
+        case Meta::frontier:     color = CYAN; break;
+        case Meta::explored:     color = 0x888888ff; break;
+        }
+
+        switch (s.meta_data[i].path)
+        {
+        case Meta::start:   color = GREEN;   break;
+        case Meta::goal:    color = MAGENTA; break;
+        case Meta::route:   color = YELLOW;  break;
+        }
+
+        sfwl::drawBox(s.node_data[i].x, s.node_data[i].y, 8, color);
+    }
+
+
+    for (unsigned i = 0; i < s.size - 1; ++i)
+        for (unsigned j = i + 1; j < s.size; ++j)
+            if (s.edge_data[i*s.size + j] || s.edge_data[j*s.size + i])
+            {
+                unsigned color = 0x888888ff;
+                if (s.meta_data[i].path && s.meta_data[j].path)
+                    color = YELLOW;
+                
+                sfwl::drawLine(s.node_data[i].x, s.node_data[i].y,
+                               s.node_data[j].x, s.node_data[j].y, color);
+            }
+}
+
+
+
+inline float Heuristic(const Vector2 &a, const Vector2 &b)
+{
+    return fabsf(a.x-b.x) + fabsf(a.y-b.y);
+}
+
+inline bool  Comparison(const Meta &a,const Meta &b)
 {
     return a.f < b.f;
 }
 
+
 int main(int argc, char **argv)
 {
-    Grid2D myGrid(4, 4, {100,100}, {200,200});
+    Graph<Vector2> *pGraph = makeGrid({80,60}, {720,540}, 24, 24);
 
-    Solver<Vector2> st(4, myGrid.node_data, myGrid.edge_data, comparison, distance);
-        
+    std::vector<Vector2> dat = pGraph->getData();
+    std::vector<float> mat = pGraph->getMatrix();
+    
+    delete pGraph;
+
+    Solver<Vector2> st(dat.size(), dat, mat, Comparison, Heuristic);
+  
+    
     sfwl::initContext();
 
-    while (sfwl::stepContext())
+    
+    unsigned start = rand() % st.size;
+    unsigned goal  = rand() % st.size;
+    st.doSearch(start, goal);
+
+    bool solved = false;
+    float timer = 0;
+    float delay = .01f;
+    do
     {
-        for (unsigned i = 0; i < myGrid.size; ++i)
-            sfwl::drawBox(myGrid.node_data[i].x, myGrid.node_data[i].y, 8);
+        timer += sfwl::getDeltaTime();
 
-        for (unsigned i = 0; i < myGrid.size; ++i)
-            for (unsigned j = 0; j < myGrid.size; ++j)
-                if (myGrid.edge_data[i*myGrid.size + j])
-                {
-                    sfwl::drawLine(myGrid.node_data[i].x, myGrid.node_data[i].y, 
-                                   myGrid.node_data[j].x, myGrid.node_data[j].y );
-                }
+        if(timer > delay)
         {
+            
+            if (st.step() && !solved)
+            {               
+                st.getPath();
+                solved = true;
+                timer = 0;
+            }
+            else if(!solved)  timer = 0;
 
+            if(timer > 2.1f)
+            {
+                solved = false;
+                timer = 0;
+                start = goal;
+                goal = rand() % st.size;
+                st.doSearch(start, goal);
+            }                    
         }
-    }
+
+        drawSolver(st);
+    } while (sfwl::stepContext());
 
     sfwl::termContext();
-
-
-    //st.doSearch(0, 3);
-    //while (!st.step());
-
-    //auto r = st.getPath();
     return 0;
-};
+};
