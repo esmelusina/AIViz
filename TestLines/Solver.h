@@ -84,6 +84,14 @@ public:
         meta_data[goal ].path = Meta::goal;
     }
 
+
+    std::vector<size_t> SolveAll(unsigned start, unsigned goal)
+    {
+        doSearch(start, goal);
+        while (!step());
+        return getPath();
+    }
+
     std::vector<size_t> getPath()
     {
         std::vector<size_t> path;

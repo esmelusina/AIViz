@@ -28,18 +28,6 @@ inline void drawSolver(const Solver<Vector2> &s)
         sfwl::drawBox(s.node_data[i].x, s.node_data[i].y, 8, color);
     }
 
-
-    for (unsigned i = 0; i < s.size - 1; ++i)
-        for (unsigned j = i + 1; j < s.size; ++j)
-            if (s.edge_data[i*s.size + j] || s.edge_data[j*s.size + i])
-            {
-                unsigned color = 0x888888ff;
-                if (s.meta_data[i].path && s.meta_data[j].path)
-                    color = YELLOW;
-                
-                sfwl::drawLine(s.node_data[i].x, s.node_data[i].y,
-                               s.node_data[j].x, s.node_data[j].y, color);
-            }
 }
 
 
@@ -51,13 +39,13 @@ inline float Heuristic(const Vector2 &a, const Vector2 &b)
 
 inline bool  Comparison(const Meta &a,const Meta &b)
 {
-    return a.f < b.f;
+    return a.DOS > b.DOS;
 }
 
 
 int main(int argc, char **argv)
 {
-    Graph<Vector2> *pGraph = makeGrid({80,60}, {720,540}, 24, 24);
+    Graph<Vector2> *pGraph = makeGrid({0,0}, {800,600}, 32, 32);
 
     std::vector<Vector2> dat = pGraph->getData();
     std::vector<float> mat = pGraph->getMatrix();
@@ -76,12 +64,12 @@ int main(int argc, char **argv)
 
     bool solved = false;
     float timer = 0;
-    float delay = .01f;
+    //float delay = .01f;
     do
     {
         timer += sfwl::getDeltaTime();
 
-        if(timer > delay)
+        if(timer > 0.0f)
         {
             
             if (st.step() && !solved)
@@ -91,7 +79,7 @@ int main(int argc, char **argv)
                 timer = 0;
             }
             else if(!solved)  timer = 0;
-
+            
             if(timer > 2.1f)
             {
                 solved = false;
