@@ -7,6 +7,19 @@
 #include <set>      // Alternative Closed List
 #include <iostream>
 
+struct Vector2
+{
+    float x, y;
+    Vector2() {}
+    Vector2(float x, float y) :x(x), y(y) {}
+};
+
+inline float distance(Vector2 a, Vector2 b)
+{
+    return sqrtf((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y));
+}
+
+
 class Graph
 {
 public:
@@ -15,15 +28,21 @@ public:
     struct Edge
     {
         Node *connection;
+        float weight;
         // default constructor
         Edge() : connection(NULL) { }
         // overloaded construct
-        Edge(Node *node) : connection(node) { }
+        Edge(Node *node, float weight) : connection(node), weight(weight) { }
     };
     struct Node
     {
         int value;
-        int dos; // Degrees of Separation
+        
+        int   dos; // Degrees of Separation
+        Node *prev;
+
+        float g;
+                
         std::vector< Graph::Edge > connections;
         // default constructor
         Node() : value(0) {}
@@ -42,14 +61,26 @@ public:
         m_nodes.push_back(new Node(value));
         return m_nodes.back();
     }
-    void AddConnection(Node *n1, Node *n2/*, float weight */)
+    void AddConnection(Node *n1, Node *n2, float weight = 1)
     {
-        n1->connections.push_back(Edge(n2/*, weight*/));
-        n2->connections.push_back(Edge(n1/*, weight*/));
+        n1->connections.push_back(Edge(n2, weight));
+        n2->connections.push_back(Edge(n1, weight));
     }
 private:
-    std::vector< Node * > m_nodes;
+    std::vector< Node *> m_nodes;
 };
+
+
+
+
+
+
+
+
+
+
+
+
 
 inline void PrintDFS(Graph::Node *startNode)
 {
@@ -76,7 +107,6 @@ inline void PrintDFS(Graph::Node *startNode)
     }
 }
 
-
 inline void PrintBFS(Graph::Node *startNode)
 {
     std::list <Graph::Node *> frontier;  // Open List
@@ -101,7 +131,13 @@ inline void PrintBFS(Graph::Node *startNode)
     }
 }
 
+
+
+
+
 typedef bool (*CompFunc)(const Graph::Node  *, const Graph::Node  *);
+
+typedef float(*HeurFunc)(const Graph::Node  *, const Graph::Node  *);
 
 inline bool CompareDFS(const Graph::Node  *a, const Graph::Node *b)
 {
@@ -113,8 +149,17 @@ inline bool CompareBFS(const Graph::Node *a, const Graph::Node *b)
     return a->dos < b->dos;
 }
 
+inline bool compareDijkstra(const Graph::Node *a, const Graph::Node *b)
+{
+    return a->g < b->g;
+}
 
-inline void PrintByComparison(Graph::Node *startNode, CompFunc comp)
+inline float distance(const Graph::Node *a, const Graph::Node *b)
+{
+    
+}
+
+inline void PrintByComparison(Graph::Node *startNode, Graph::Node *goalNode, CompFunc comp, HeurFunc heur)
 {
     std::list <Graph::Node *> frontier;  // Open List
     std::set  <Graph::Node *> explored;  // Closed List
@@ -125,31 +170,47 @@ inline void PrintByComparison(Graph::Node *startNode, CompFunc comp)
     explored.insert(startNode);
     // set it's book-keeping data to help us sort the frontier
     startNode->dos = 0;
-
+    startNode->g   = 0;
+    Graph::Node *current = nullptr;
     while (!frontier.empty()) // Nodes left to process
     {
         frontier.sort(comp);  // order the frontier according to our priorities
                               // This is a 'priority queue'
 
         // Process the current node
-        auto current = frontier.front();
+        current = frontier.front();
         std::cout << (char)current->value << " ";
         frontier.pop_front();
+
+        if (current == goalNode) break;
 
         // Add all neighbors to the frontier!
         for each(Graph::Edge e in current->connections)
         {
-            if (!explored.count(e.connection)) // add a new node if it isn't explored
+            float g = current->g + e.weight;
+
+            if (g < e.connection->g || !explored.count(e.connection))
             {
-                e.connection->dos = current->dos + 1;
-                frontier.push_back(e.connection);
+                e.connection->dos = e.connection->dos + 1;
+                e.connection->g = g;
+                e.connection->prev = current;
+                
+                if (!explored.count(e.connection))
+                    frontier.push_back(e.connection);
+
                 explored.insert(e.connection);
             }
-            // If it's already in the frontier, but our new book-keeping data is better
-            // just update the book-keeping data
-            else if (explored.count(e.connection) &&
-                            e.connection->dos > current->dos + 1)
-                e.connection->dos = current->dos + 1;
         }
     }
+
+    std::cout << std::endl;
+    // current->prev->prev->prev->prev
+
+
+    while (current != startNode)
+    {
+        std::cout << (char)current->value << " ";
+        current = current->prev;
+    }
+    std::cout << (char)startNode->value << " ";
 }

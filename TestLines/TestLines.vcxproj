@@ -77,7 +77,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graph.h" />
+    <ClInclude Include="Grid.h" />
     <ClInclude Include="MyGraph.h" />
+    <ClInclude Include="Solver.h" />
     <ClInclude Include="visualize.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,41 +1,46 @@
 #include "sfwl.h"
-
+#include <random>
 #include <iostream>
 
-#include "Graph.h"
+#include "Grid.h"
+#include "Solver.h"
 
-
-//#include "visualize.h"
+bool comparison(const Solver<Vector2>::Meta &a, const Solver<Vector2>::Meta &b)
+{
+    return a.f < b.f;
+}
 
 int main(int argc, char **argv)
 {
-    Graph *pGraph = new Graph();
-    
-    Graph::Node *a, *b, *c, *d, *e, *f, *g, *h, *i, *j;
-    a = pGraph->AddNode('a'); b = pGraph->AddNode('b');
-    c = pGraph->AddNode('c'); d = pGraph->AddNode('d');
-    e = pGraph->AddNode('e'); f = pGraph->AddNode('f');
-    g = pGraph->AddNode('g'); h = pGraph->AddNode('h');
-    i = pGraph->AddNode('i'); j = pGraph->AddNode('j');
-    pGraph->AddConnection(a, b); pGraph->AddConnection(a, d);
-    pGraph->AddConnection(a, e); pGraph->AddConnection(b, c);
-    pGraph->AddConnection(d, h); pGraph->AddConnection(e, h);
-    pGraph->AddConnection(e, f); pGraph->AddConnection(f, c);
-    pGraph->AddConnection(f, j); pGraph->AddConnection(g, c);
-    pGraph->AddConnection(g, j); pGraph->AddConnection(i, j);
-    pGraph->AddConnection(i, h);
+    Grid2D myGrid(4, 4, {100,100}, {200,200});
 
-    PrintDFS(a);
-    std::cout << std::endl;
-    PrintBFS(a);
-    std::cout << std::endl;
-    std::cout << std::endl;
-    PrintByComparison(a, CompareDFS);
-    std::cout << std::endl;
-    PrintByComparison(a, CompareBFS);
-    std::cout << std::endl;
+    Solver<Vector2> st(4, myGrid.node_data, myGrid.edge_data, comparison, distance);
+        
+    sfwl::initContext();
 
-    delete pGraph;
-    system("pause");
+    while (sfwl::stepContext())
+    {
+        for (unsigned i = 0; i < myGrid.size; ++i)
+            sfwl::drawBox(myGrid.node_data[i].x, myGrid.node_data[i].y, 8);
+
+        for (unsigned i = 0; i < myGrid.size; ++i)
+            for (unsigned j = 0; j < myGrid.size; ++j)
+                if (myGrid.edge_data[i*myGrid.size + j])
+                {
+                    sfwl::drawLine(myGrid.node_data[i].x, myGrid.node_data[i].y, 
+                                   myGrid.node_data[j].x, myGrid.node_data[j].y );
+                }
+        {
+
+        }
+    }
+
+    sfwl::termContext();
+
+
+    //st.doSearch(0, 3);
+    //while (!st.step());
+
+    //auto r = st.getPath();
     return 0;
 };
