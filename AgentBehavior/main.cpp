@@ -13,11 +13,13 @@ void main()
     sally.maxRunSpeed = 100;
 
     //    float radius, distance, jitter;    
+    Wander wander = Wander{50,50,10};
 
     while (sfwl::stepContext())
     {
         sally.update(sfwl::getDeltaTime());
 
+        wander.update(sally);
 
         sally.draw();
     }

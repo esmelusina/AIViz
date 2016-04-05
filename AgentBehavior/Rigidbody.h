@@ -1,12 +1,13 @@
 #pragma once
 #include "Vector2.h"
+#include <iostream>
 
 /* Simplified and Streamlined Rigidbody */
 
 class Rigidbody 
 {
 public:
-    float mass, drag;
+    float mass;
 
     Vector2 velocity, acceleration, force;
 
@@ -29,5 +30,7 @@ public:
         position = position + velocity * dt;
 
         force = { 0, 0 };
+
+
     }
 };

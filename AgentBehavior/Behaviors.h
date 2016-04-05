@@ -1,25 +1,22 @@
 #pragma once
 #include "Agent.h"
 
-struct Behavior
-{
-    virtual void update(Agent &a) = 0;
-};
 
 
-struct Flee : Behavior
+
+struct Flee
 {
     Vector2 *e_target;
     void update(Agent &a);
 };
 
-struct Seek : Behavior
+struct Seek 
 {
     Vector2 *e_target;
     void update(Agent &a);
 };
 
-struct Wander : Behavior
+struct Wander
 {
     float radius, distance, jitter;
     Vector2 target;
