@@ -9,10 +9,7 @@
 #include "Vector2.h"
 
 
-inline float distance(const Vector2 &a, const Vector2 &b)
-{
-    return sqrtf((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y));
-}
+
 
 
 template<typename T>
@@ -128,6 +125,19 @@ inline Graph<Vector2> *makeGrid(Vector2 min, Vector2 max, unsigned rows, unsigne
         if (a != *it) r.AddConnection(*it, a, distance(a->data, (*it)->data));
 
          a = r.FindNode(Vector2((*it)->data.x, (*it)->data.y - yOffset), distance);
+        if (a != *it) r.AddConnection(*it, a, distance(a->data, (*it)->data));
+
+
+        a = r.FindNode(Vector2((*it)->data.x + xOffset, (*it)->data.y + yOffset), distance);
+        if (a != *it) r.AddConnection(*it, a, distance(a->data, (*it)->data));
+
+        a = r.FindNode(Vector2((*it)->data.x - xOffset, (*it)->data.y - xOffset), distance);
+        if (a != *it) r.AddConnection(*it, a, distance(a->data, (*it)->data));
+
+        a = r.FindNode(Vector2((*it)->data.x - xOffset, (*it)->data.y + yOffset), distance);
+        if (a != *it) r.AddConnection(*it, a, distance(a->data, (*it)->data));
+
+        a = r.FindNode(Vector2((*it)->data.x + yOffset, (*it)->data.y - yOffset), distance);
         if (a != *it) r.AddConnection(*it, a, distance(a->data, (*it)->data));
     }
     return graph;

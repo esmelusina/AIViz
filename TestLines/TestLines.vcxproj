@@ -73,11 +73,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="GraphExample.cpp" />
+    <ClCompile Include="AgentExample.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Agent.h" />
     <ClInclude Include="Graph.h" />
+    <ClInclude Include="Rigidbody.h" />
     <ClInclude Include="Solver.h" />
     <ClInclude Include="Vector2.h" />
   </ItemGroup>

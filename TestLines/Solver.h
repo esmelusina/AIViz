@@ -30,6 +30,7 @@ class Solver
 {
 public:
 
+    bool finished;
 
     // comparison and heuristic function typedefs
    
@@ -46,6 +47,8 @@ public:
 
     size_t start, goal, size;
 
+    
+
     // Build the solver based upon the graph information provided
     Solver(size_t size,
         const std::vector<Node> &nodes,
@@ -61,6 +64,7 @@ public:
     // initialize searching
     void doSearch(size_t start, size_t goal)
     {
+        finished = false;
         this->goal  = goal;     //set goal and start
         this->start = start;
         meta_data.clear();      // clear out metadata
@@ -85,11 +89,17 @@ public:
     }
 
 
-    std::vector<size_t> SolveAll(unsigned start, unsigned goal)
+    std::vector<Vector2> SolveAll(unsigned start, unsigned goal)
     {
         doSearch(start, goal);
         while (!step());
-        return getPath();
+        auto path = getPath();
+
+        std::vector<Vector2> data(path.size());
+        for (unsigned i = 0; i < path.size(); ++i)
+            data[i] = node_data[path[i]];
+        
+        return data;
     }
 
     std::vector<size_t> getPath()
@@ -119,7 +129,7 @@ public:
 
     int step() 
     {
-        if(frontier.empty()) return -1; // I failed!
+        if(frontier.empty()) return finished = -1; // I failed!
 
         frontier.sort(comp);
         
@@ -131,7 +141,7 @@ public:
         if (current.self == goal)
         {
             frontier.clear();
-            return 1; // I succeeded!
+            return finished = 1; // I succeeded!
         }
 
         for (unsigned i = 0; i < size; ++i)

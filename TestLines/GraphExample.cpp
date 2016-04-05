@@ -6,7 +6,8 @@
 #include "Graph.h"
 #include "Solver.h"
 
-inline void drawSolver(const Solver<Vector2> &s)
+// Visualizer for the solver
+inline void drawSolver(Solver<Vector2> &s)
 {
     for (unsigned i = 0; i < s.size; ++i)
     {
@@ -27,6 +28,15 @@ inline void drawSolver(const Solver<Vector2> &s)
 
         sfwl::drawBox(s.node_data[i].x, s.node_data[i].y, 8, color);
     }
+    if (s.finished)
+    {
+        auto path = s.getPath();
+        for (unsigned i = 0; i < path.size()-1; ++i)
+        {
+            sfwl::drawLine(s.node_data[path[i]].x, s.node_data[path[i]].y,
+                s.node_data[path[i + 1]].x, s.node_data[path[i + 1]].y, YELLOW);
+        }
+    }
 
 }
 
@@ -43,7 +53,7 @@ inline bool  Comparison(const Meta &a,const Meta &b)
 }
 
 
-char main(int argc, char **argv)
+char main1(int argc, char **argv)
 {
     Graph<Vector2> *pGraph = makeGrid({0,0}, {800,600}, 32, 32);
 

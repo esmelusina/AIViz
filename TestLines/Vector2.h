@@ -25,6 +25,12 @@ struct Vector2
     {
         return{ cosf(a), sinf(a) };
     }
+
+    static Vector2 Vector2::random(const Vector2 &a = {0,0})
+    {
+       return Vector2{((float)rand() / (float)RAND_MAX)*a.x,
+                      ((float)rand() / (float)RAND_MAX)*a.y};
+    }
 };
 
 // Direction Between Vectors:
@@ -103,7 +109,8 @@ inline Vector2 snap(const Vector2 &val, const Vector2 &lower, const Vector2 &upp
         val.y - lower.y < upper.y - val.y ? lower.y : upper.y };
 }
 
-inline Vector2 random(const Vector2 &min, const Vector2 &max)
+
+inline float distance(const Vector2 &a, const Vector2 &b)
 {
-    
+    return sqrtf((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y));
 }
