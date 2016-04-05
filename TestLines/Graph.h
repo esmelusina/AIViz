@@ -6,13 +6,8 @@
 #include <list>     // Closed List
 #include <set>      // Alternative Closed List
 #include <iostream>
+#include "Vector2.h"
 
-struct Vector2
-{
-    float x, y;
-    Vector2() {}
-    Vector2(float x, float y) :x(x), y(y) {}
-};
 
 inline float distance(const Vector2 &a, const Vector2 &b)
 {

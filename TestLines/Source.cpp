@@ -43,7 +43,7 @@ inline bool  Comparison(const Meta &a,const Meta &b)
 }
 
 
-int main(int argc, char **argv)
+char main(int argc, char **argv)
 {
     Graph<Vector2> *pGraph = makeGrid({0,0}, {800,600}, 32, 32);
 

@@ -11,7 +11,10 @@ struct Seek
 
     // Randomly select new target position if too close.
     // Otherwise, addForce in direction of target.
-    void update(Agent &a);    
+    void update(Agent &a)
+    {
+
+    }
 };
 
 struct Agent
