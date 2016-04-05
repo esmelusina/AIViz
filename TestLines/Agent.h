@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Graph.h"
+#include "sfwl.h"
 
 struct Agent;
 
@@ -15,20 +16,26 @@ struct Seek
 
 struct Agent
 {
+    Vector2 position;
+    Vector2 force;
+    Vector2 acceleration;
+    Vector2 velocity;
 
-    /*
-    Position
+    void addForce(const Vector2 &f);  //increase the forces
+    void integrate(float dt);        // Integrate force over accel, accel over velocity, velocity over position
 
-        RigidBody properties
-            - Force
-            - Acceleration
-            - Velocity
-            - addForce(Vector2)
+    Seek seek;
 
-        update
-            - update Seek
+    void update(float dt)
+    {
+        integrate(dt);
+        seek.update(*this);
+    }
 
-        draw
-            - Draw a box or something at the position
-    */
+    void draw()
+    {
+        sfwl::drawBox(position.x, position.y, 8, RED);
+        sfwl::drawLine(position.x, position.y,
+            position.x + velocity.x, position.y + velocity.y);
+    }
 };
