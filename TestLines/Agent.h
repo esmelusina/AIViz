@@ -20,16 +20,23 @@ struct Seek
     void update(Agent &a);
 };
 
+struct Wander
+{
+    void update(Agent &a);
+};
+
 struct Agent
 {
     Vector2 position;
     Rigidbody rigidbody;
     Seek seek;
+    Wander wander;
 
     void update(float dt)
     {
         rigidbody.integrate(position,dt);
         seek.update(*this);
+        wander.update(*this);
     }
 
     void draw()
@@ -47,6 +54,7 @@ struct Agent
                            seek.waypoints[i + 1].x, seek.waypoints[i+1].y, YELLOW);
         }
 
+        if(seek.waypoints.size())
         sfwl::drawLine(position.x,position.y,seek.waypoints[seek.current].x, seek.waypoints[seek.current].y, GREEN);
     }
 };
@@ -68,5 +76,12 @@ inline void Seek::update(Agent &a)
     if ( curDis < 25 || nexDis < curDis)
         current++;
 
-    a.rigidbody.addForce((waypoints[current] - a.position) * 1900);
+    Vector2 desiredVelocity = normal(waypoints[current] - a.position) * 75;
+
+    a.rigidbody.addForce(desiredVelocity - a.rigidbody.velocity);
+}
+
+void Wander::update(Agent &a)
+{
+   // a.rigidbody.addForce(Vector2::random({ 1500,1500 }) - Vector2{750,750});
 }

@@ -30,8 +30,8 @@ public:
         acceleration = acceleration + jerk * dt; // acceleration = force/mass;
         velocity = velocity + acceleration * dt;
 
-        if (velocity.magnitude() > terminalVelocity)
-            velocity = normal(velocity) * terminalVelocity;
+        //if (velocity.magnitude() > terminalVelocity)
+          //  velocity = normal(velocity) * terminalVelocity;
 
         p = p + velocity * dt;
 
